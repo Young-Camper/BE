@@ -2,6 +2,13 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout') {
+                steps {
+                    git branch: 'feature/cicd', credentialsId: 'github',url: 'https://github.com/Young-Camper/BE.git'
+
+                    sh 'git pull origin feature/cicd'
+                }
+            }
         stage('Prepare Config') {
             steps {
                 configFileProvider([
