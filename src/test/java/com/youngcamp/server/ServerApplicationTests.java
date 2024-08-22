@@ -4,11 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
@@ -22,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@TestPropertySource("classpath:application-test.properties")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureMockMvc
 public class ServerApplicationTests {
@@ -37,6 +40,12 @@ public class ServerApplicationTests {
 
 	@Autowired
 	private MockMvc mockMvc;
+
+	@Value("${server.address}")
+	private String serverAddress;
+
+	@Value("${server.port}")
+	private int serverPort;
 
 	@Test
 	void contextLoads() {
@@ -58,7 +67,7 @@ public class ServerApplicationTests {
 
 	@Test
 	void testSwaggerUI() {
-		String url = "http://localhost:" + port + "/swagger-ui.html";
+		String url = String.format("http://%s:%d/swagger-ui.html", serverAddress, port);
 		String response = this.restTemplate.getForObject(url, String.class);
 		assertThat(response).contains("Swagger UI");
 	}
