@@ -1,7 +1,4 @@
 package com.youngcamp.server;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +6,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,14 +18,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Base64;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@TestPropertySource("classpath:application-test.properties")
+@TestPropertySource("classpath:application-test.yml")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureMockMvc
 public class ServerApplicationTests {
@@ -47,6 +50,12 @@ public class ServerApplicationTests {
 	@Value("${server.port}")
 	private int serverPort;
 
+	@Value("${auth.username}")
+	private String username;
+
+	@Value("${auth.password}")
+	private String password;
+
 	@Test
 	void contextLoads() {
 		// 애플리케이션 컨텍스트 로드 여부를 확인하는 기본 테스트
@@ -61,15 +70,23 @@ public class ServerApplicationTests {
 	}
 
 	@Test
-	void testDatabaseCrudOperations() {
-		// 실제 CRUD 테스트를 여기에 작성하세요
-	}
-
-	@Test
 	void testSwaggerUI() {
+		// Swagger UI에 접근하기 위한 URL 설정
 		String url = String.format("http://%s:%d/swagger-ui.html", serverAddress, port);
-		String response = this.restTemplate.getForObject(url, String.class);
-		assertThat(response).contains("Swagger UI");
+
+		// HTTP Basic 인증 헤더 추가
+		HttpHeaders headers = new HttpHeaders();
+		String auth = username + ":" + password;
+		String encodedAuth = Base64.getEncoder().encodeToString(auth.getBytes());
+		String authHeader = "Basic " + encodedAuth;
+		headers.set("Authorization", authHeader);
+
+
+		HttpEntity<String> entity = new HttpEntity<>(headers);
+		ResponseEntity<String> response = this.restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+
+		assertThat(response.getBody()).contains("Swagger UI");
 	}
 
 	@Test
