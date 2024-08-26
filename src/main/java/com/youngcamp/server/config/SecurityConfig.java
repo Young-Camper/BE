@@ -15,12 +15,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(authorize -> authorize
+            .cors(withDefaults())
+            .authorizeHttpRequests(authorize -> authorize
 
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").authenticated()
 
-                        .anyRequest().permitAll()
-                )
+                        .anyRequest().permitAll())
 
                 .formLogin(withDefaults())
 
