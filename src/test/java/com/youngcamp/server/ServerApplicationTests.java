@@ -22,7 +22,7 @@ import java.util.Base64;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -93,6 +93,6 @@ public class ServerApplicationTests {
 	public void testGetTest() throws Exception {
 		mockMvc.perform(get("/test"))
 				.andExpect(status().isOk())
-				.andExpect(content().string("test success"));
+				.andExpect(jsonPath("$.message").value("test success"));
 	}
 }
