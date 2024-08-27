@@ -9,4 +9,3 @@ public class NotFoundErrorResponse extends ErrorResponse {
     super(message, errors);
   }
 }
-
