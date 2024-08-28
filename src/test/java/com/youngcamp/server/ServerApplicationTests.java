@@ -68,7 +68,7 @@ public class ServerApplicationTests {
   @Test
   void testSwaggerUI() {
     // Swagger UI에 접근하기 위한 URL 설정
-    String url = String.format("http://%s:%d/swagger-ui.html", serverAddress, port);
+    String url = String.format("http://%s:%d/api/swagger-ui/index.html", serverAddress, port);
 
     // HTTP Basic 인증 헤더 추가
     HttpHeaders headers = new HttpHeaders();
