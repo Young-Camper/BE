@@ -68,7 +68,7 @@ public class ServerApplicationTests {
   @Test
   void testSwaggerUI() {
     // Swagger UI에 접근하기 위한 URL 설정
-    String url = String.format("http://%s:%d/api/swagger-ui/index.html", serverAddress, port);
+    String url = String.format("http://%s:%d/api/login", serverAddress, port); // 로그인 경로 변경
 
     // HTTP Basic 인증 헤더 추가
     HttpHeaders headers = new HttpHeaders();
@@ -81,7 +81,13 @@ public class ServerApplicationTests {
     ResponseEntity<String> response =
         this.restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
-    assertThat(response.getBody()).contains("Swagger UI");
+    // 로그인 후 Swagger UI 접근
+    String swaggerUrl =
+        String.format("http://%s:%d/api/swagger-ui/index.html", serverAddress, port);
+    ResponseEntity<String> swaggerResponse =
+        this.restTemplate.exchange(swaggerUrl, HttpMethod.GET, entity, String.class);
+
+    assertThat(swaggerResponse.getBody()).contains("Swagger UI");
   }
 
   @Test
