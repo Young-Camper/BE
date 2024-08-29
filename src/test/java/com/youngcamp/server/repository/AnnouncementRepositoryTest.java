@@ -68,7 +68,7 @@ public class AnnouncementRepositoryTest {
 
         //when
         Announcement savedAnnouncement = announcementRepository.save(announcement);
-        announcementRepository.deleteAllByUserId(savedAnnouncement.getId());
+        announcementRepository.deleteAllByUserId(List.of(savedAnnouncement.getId()));
         Optional<Announcement> result = announcementRepository.findById(announcement.getId());
 
         //then
