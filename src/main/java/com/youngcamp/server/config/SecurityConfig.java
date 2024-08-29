@@ -48,6 +48,13 @@ public class SecurityConfig {
                 formLogin.loginPage("/api/login").loginProcessingUrl("/api/login").permitAll())
         .httpBasic(withDefaults());
 
+    http.authorizeHttpRequests(
+            authorize ->
+                 authorize
+                    .requestMatchers("/api/admin/**").authenticated())
+            .sessionManagement(
+                    sessionManagement -> sessionManagement.maximumSessions(1));
+
     return http.build();
   }
 
