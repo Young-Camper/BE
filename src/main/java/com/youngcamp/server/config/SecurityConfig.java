@@ -51,7 +51,8 @@ public class SecurityConfig {
     http.authorizeHttpRequests(
             authorize ->
                  authorize
-                    .requestMatchers("/api/admin/**").authenticated())
+                     .requestMatchers("/api/admin/login").permitAll()
+                     .requestMatchers("/api/admin/**").authenticated())
             .sessionManagement(
                     sessionManagement -> sessionManagement.maximumSessions(1));
 
