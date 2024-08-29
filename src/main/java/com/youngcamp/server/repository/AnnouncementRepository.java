@@ -15,8 +15,4 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Long
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "delete from Announcement a where a.id in :announcementIds")
     void deleteAllByUserId(@Param("announcementIds") List<Long> ids);
-
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query(value = "delete from Announcement a where a.id = :announcementId")
-    void deleteAllByUserId(@Param("announcementId") Long id);
 }
