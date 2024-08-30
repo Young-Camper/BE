@@ -13,7 +13,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.Duration;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,18 +25,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PresignedUrlController {
 
-  private final Bucket bucket;
+
+  private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
   private final PresignedUrlService presignedUrlService;
 
-  // 생성자 주입
   @Autowired
   public PresignedUrlController(PresignedUrlService presignedUrlService) {
     this.presignedUrlService = presignedUrlService;
-    // 10초에 5개의 요청을 허용하는 Rate Limiting
-    Bandwidth limit = Bandwidth.simple(5, Duration.ofSeconds(10));
-    this.bucket = Bucket4j.builder()
-        .addLimit(limit)
-        .build();
+  }
+
+  private Bucket getBucketForClient(String clientIp) {
+    return buckets.computeIfAbsent(clientIp, k -> {
+      Bandwidth limit = Bandwidth.simple(5, Duration.ofSeconds(10));
+      return Bucket4j.builder().addLimit(limit).build();
+    });
   }
 
   @Operation(
@@ -60,8 +65,11 @@ public class PresignedUrlController {
   @GetMapping("/api/presigned")
   public SuccessResponse<PresignedUrlResponseDTO> getPresignedUrl(
       @Parameter(description = "The key for the object to be uploaded", example = "testimage.jpg")
+      HttpServletRequest request,
       @RequestParam
       String key) {
+    String clientIp = request.getRemoteAddr();
+    Bucket bucket = getBucketForClient(clientIp);
 
     if (bucket.tryConsume(1)) {
       String presignedUrl = presignedUrlService.generatePresignedUrl(key);
