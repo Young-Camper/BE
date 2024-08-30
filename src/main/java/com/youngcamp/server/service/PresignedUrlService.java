@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -37,6 +38,7 @@ public class PresignedUrlService {
 
   public String generatePresignedUrl(String objectKey) {
     String mimeType = getMimeType(objectKey);
+    String uniqueKey = UUID.randomUUID() + "-" + objectKey;
 
     if (!ALLOWED_IMAGE_TYPES.contains(mimeType)) {
       List<ErrorDetail> errors =
@@ -57,7 +59,7 @@ public class PresignedUrlService {
     PutObjectRequest objectRequest =
         PutObjectRequest.builder()
             .bucket(s3BucketName)
-            .key(objectKey)
+            .key(uniqueKey)
             .contentType(mimeType)
             .build();
 

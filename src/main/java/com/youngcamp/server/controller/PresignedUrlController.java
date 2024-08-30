@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PresignedUrlController {
 
-
   private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
   private final PresignedUrlService presignedUrlService;
 
@@ -35,10 +34,14 @@ public class PresignedUrlController {
   }
 
   private Bucket getBucketForClient(String clientIp) {
-    return buckets.computeIfAbsent(clientIp, k -> {
-      Bandwidth limit = Bandwidth.simple(5, Duration.ofSeconds(10));
-      return Bucket4j.builder().addLimit(limit).build();
-    });
+    return buckets.computeIfAbsent(
+        clientIp,
+        k -> {
+          Bandwidth limit = Bandwidth.simple(5, Duration.ofSeconds(10));
+          return Bucket4j.builder()
+              .addLimit(limit) // 최신 방식
+              .build();
+        });
   }
 
   @Operation(
@@ -64,8 +67,8 @@ public class PresignedUrlController {
       })
   @GetMapping("/api/presigned")
   public SuccessResponse<PresignedUrlResponseDTO> getPresignedUrl(
-      @Parameter(description = "The key for the object to be uploaded", example = "testimage.jpg")
       HttpServletRequest request,
+      @Parameter(description = "The key for the object to be uploaded", example = "testimage.jpg")
       @RequestParam
       String key) {
     String clientIp = request.getRemoteAddr();

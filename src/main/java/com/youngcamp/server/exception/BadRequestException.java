@@ -1,8 +1,8 @@
 package com.youngcamp.server.exception;
 
 import com.youngcamp.server.utils.ErrorDetail;
-import lombok.Getter;
 import java.util.List;
+import lombok.Getter;
 
 @Getter
 public class BadRequestException extends RuntimeException {
