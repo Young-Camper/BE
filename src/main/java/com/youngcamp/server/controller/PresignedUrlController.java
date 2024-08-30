@@ -49,28 +49,28 @@ public class PresignedUrlController {
       description = "Generates a presigned URL for uploading a file to S3.")
   @ApiResponses(
       value = {
-          @ApiResponse(
-              responseCode = "200",
-              description = "Presigned URL generated successfully",
-              content =
-              @Content(
-                  mediaType = "application/json",
-                  schema = @Schema(implementation = SuccessResponse.class))),
-          @ApiResponse(
-              responseCode = "400",
-              description = "Invalid request parameters",
-              content = @Content),
-          @ApiResponse(
-              responseCode = "500",
-              description = "Internal server error",
-              content = @Content)
+        @ApiResponse(
+            responseCode = "200",
+            description = "Presigned URL generated successfully",
+            content =
+                @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = SuccessResponse.class))),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid request parameters",
+            content = @Content),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content)
       })
   @GetMapping("/api/presigned")
   public SuccessResponse<PresignedUrlResponseDTO> getPresignedUrl(
       HttpServletRequest request,
       @Parameter(description = "The key for the object to be uploaded", example = "testimage.jpg")
-      @RequestParam
-      String key) {
+          @RequestParam
+          String key) {
     String clientIp = request.getRemoteAddr();
     Bucket bucket = getBucketForClient(clientIp);
 
