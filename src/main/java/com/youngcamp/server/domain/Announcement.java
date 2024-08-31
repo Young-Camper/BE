@@ -27,4 +27,11 @@ public class Announcement {
     private Boolean isPinned;
 
     private String imageUrl;
+
+    public void editAnnouncement(String title, String content, String imageUrl, Boolean isPinned) {
+        this.title = title;
+        this.content = content;
+        this.imageUrl = imageUrl;
+        this.isPinned = isPinned;
+    }
 }

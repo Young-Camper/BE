@@ -1,5 +1,6 @@
 package com.youngcamp.server.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.util.List;
@@ -25,6 +26,17 @@ public class AnnouncementRequest {
     public static class AnnouncementDeleteRequest{
         private List<Long> ids;
     }
+
+    @Getter
+    @Builder
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class AnnouncementEditRequest {
+        private String title;
+        private String content;
+        private String imageUrl;
+        private Boolean isPinned;
+    }
+
 
     private static final int MAX_SIZE = 2000;
     @Builder

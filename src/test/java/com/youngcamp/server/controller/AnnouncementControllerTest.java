@@ -3,34 +3,35 @@ package com.youngcamp.server.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youngcamp.server.domain.Announcement;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementDeleteRequest;
+import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementEditRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementPostRequest;
-import com.youngcamp.server.exception.NotFoundException;
 import com.youngcamp.server.repository.AnnouncementRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class AnnouncementControllerTest {
 
     @Autowired
@@ -166,5 +167,44 @@ public class AnnouncementControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.title").value("title"));
 
+    }
+
+    @Test
+    public void 공지사항수정() throws Exception {
+        //given
+        final String url = "/api/v1/announcements/{announcementId}";
+
+        Announcement oldAnnouncement = Announcement.builder()
+                .title("old title")
+                .content("old content")
+                .imageUrl("old image")
+                .isPinned(false)
+                .build();
+        Announcement savedAnnouncement = announcementRepository.save(oldAnnouncement);
+
+        AnnouncementEditRequest request = AnnouncementEditRequest.builder()
+                .title("new title")
+                .content("new content")
+                .imageUrl("new image")
+                .isPinned(true)
+                .build();
+
+        String json = mapper.writeValueAsString(request);
+
+        //expected
+        ResultActions resultActions = mockMvc.perform(
+                        MockMvcRequestBuilders.patch(url, savedAnnouncement.getId())
+                                .content(json)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.data.id").value(savedAnnouncement.getId()));
+
+        Announcement result = announcementRepository.findById(savedAnnouncement.getId()).get();
+        Assertions.assertThat(result.getTitle()).isEqualTo("new title");
+        Assertions.assertThat(result.getContent()).isEqualTo("new content");
+        Assertions.assertThat(result.getImageUrl()).isEqualTo("new image");
+        Assertions.assertThat(result.getIsPinned()).isEqualTo(true);
     }
 }

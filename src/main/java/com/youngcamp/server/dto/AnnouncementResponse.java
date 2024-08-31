@@ -15,6 +15,12 @@ public class AnnouncementResponse {
         private Long id;
     }
 
+    @Builder
+    @Getter
+    public static class AnnouncementEditResponse {
+        private Long id;
+    }
+
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
