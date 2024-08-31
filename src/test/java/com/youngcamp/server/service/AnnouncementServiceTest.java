@@ -14,9 +14,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -68,6 +71,20 @@ public class AnnouncementServiceTest {
 
         //then
         assertThat(result.getResourceType()).isEqualTo("Announcement");
+    }
+
+    @Test
+    public void 공지사항상세조회실패_존재하지않은글조회시도() {
+        //given
+        Long announcementId = 1L;
+        doReturn(Optional.empty()).when(announcementRepository).findById(any(Long.class));
+
+        //when
+        NotFoundException result = assertThrows(NotFoundException.class, () -> target.getDetailAnnouncement(announcementId));
+
+        //then
+        assertThat(result.getResourceType()).isEqualTo("Announcement");
+        assertThat(result.getResourceId()).isEqualTo(String.valueOf(announcementId));
     }
 
     private Announcement announcement() {
