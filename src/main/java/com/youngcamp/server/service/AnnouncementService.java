@@ -1,9 +1,12 @@
 package com.youngcamp.server.service;
 
 import com.youngcamp.server.domain.Announcement;
+import com.youngcamp.server.dto.AnnouncementRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementDeleteRequest;
+import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementEditRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementPostRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementSearch;
+import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementEditResponse;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementGetDetailResponse;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementGetResponse;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementPostResponse;
@@ -79,6 +82,17 @@ public class AnnouncementService {
                 .content(announcement.getContent())
                 .imageUrl(announcement.getImageUrl())
                 .isPinned(announcement.getIsPinned())
+                .build();
+    }
+
+    public AnnouncementEditResponse editAnnouncement(Long announcementId, AnnouncementEditRequest request) {
+        Announcement announcement = announcementRepository.findById(announcementId)
+                .orElseThrow(() -> new NotFoundException("Announcement", String.valueOf(announcementId), "Resource with the specified ID was not found"));
+
+        announcement.editAnnouncement(request.getTitle(), request.getContent(), request.getImageUrl(), request.getIsPinned());
+
+        return AnnouncementEditResponse.builder()
+                .id(announcement.getId())
                 .build();
     }
 }

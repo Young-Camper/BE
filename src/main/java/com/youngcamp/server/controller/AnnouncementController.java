@@ -1,9 +1,12 @@
 package com.youngcamp.server.controller;
 
+import com.youngcamp.server.dto.AnnouncementRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementDeleteRequest;
+import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementEditRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementPostRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementSearch;
 import com.youngcamp.server.dto.AnnouncementResponse;
+import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementEditResponse;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementGetDetailResponse;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementGetResponse;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementPostResponse;
@@ -41,6 +44,15 @@ public class AnnouncementController {
     @GetMapping("/api/v1/announcements/{announcementId}")
     public SuccessResponse<AnnouncementGetDetailResponse> getDetailAnnouncement(@PathVariable(name = "announcementId") Long announcementId) {
         AnnouncementGetDetailResponse result = announcementService.getDetailAnnouncement(announcementId);
+        return new SuccessResponse<>("Request processed successfully", result);
+    }
+
+    @PatchMapping("/api/v1/announcements/{announcementId}")
+    public SuccessResponse<AnnouncementEditResponse> editAnnouncement(
+            @PathVariable(name = "announcementId") Long announcementId,
+            @RequestBody AnnouncementEditRequest request
+    ) {
+        AnnouncementEditResponse result = announcementService.editAnnouncement(announcementId, request);
         return new SuccessResponse<>("Request processed successfully", result);
     }
 }
