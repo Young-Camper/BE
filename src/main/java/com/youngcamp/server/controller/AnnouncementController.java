@@ -3,6 +3,8 @@ package com.youngcamp.server.controller;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementDeleteRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementPostRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementSearch;
+import com.youngcamp.server.dto.AnnouncementResponse;
+import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementGetDetailResponse;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementGetResponse;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementPostResponse;
 import com.youngcamp.server.service.AnnouncementService;
@@ -33,6 +35,12 @@ public class AnnouncementController {
     @GetMapping("/api/v1/announcements")
     public SuccessResponse<List<AnnouncementGetResponse>> getAnnouncements(@ModelAttribute AnnouncementSearch request) {
         List<AnnouncementGetResponse> result = announcementService.getAnnouncements(request);
+        return new SuccessResponse<>("Request processed successfully", result);
+    }
+
+    @GetMapping("/api/v1/announcements/{announcementId}")
+    public SuccessResponse<AnnouncementGetDetailResponse> getDetailAnnouncement(@PathVariable(name = "announcementId") Long announcementId) {
+        AnnouncementGetDetailResponse result = announcementService.getDetailAnnouncement(announcementId);
         return new SuccessResponse<>("Request processed successfully", result);
     }
 }

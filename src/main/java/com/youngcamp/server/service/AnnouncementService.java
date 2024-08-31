@@ -4,6 +4,7 @@ import com.youngcamp.server.domain.Announcement;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementDeleteRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementPostRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementSearch;
+import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementGetDetailResponse;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementGetResponse;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementPostResponse;
 import com.youngcamp.server.exception.NotFoundException;
@@ -67,5 +68,17 @@ public class AnnouncementService {
         return announcementRepository.findAll(pageable).getContent().stream()
                 .map(AnnouncementGetResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    public AnnouncementGetDetailResponse getDetailAnnouncement(Long announcementId) {
+        Announcement announcement = announcementRepository.findById(announcementId)
+                .orElseThrow(() -> new NotFoundException("Announcement", String.valueOf(announcementId), "Resource with the specified ID was not found"));
+
+        return AnnouncementGetDetailResponse.builder()
+                .title(announcement.getTitle())
+                .content(announcement.getContent())
+                .imageUrl(announcement.getImageUrl())
+                .isPinned(announcement.getIsPinned())
+                .build();
     }
 }

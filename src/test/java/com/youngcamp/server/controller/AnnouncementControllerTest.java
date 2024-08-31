@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youngcamp.server.domain.Announcement;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementDeleteRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementPostRequest;
+import com.youngcamp.server.exception.NotFoundException;
 import com.youngcamp.server.repository.AnnouncementRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -142,5 +145,26 @@ public class AnnouncementControllerTest {
                 .andExpect(jsonPath("$.data.length()").value(10));
     }
 
+    @Test
+    public void 공지사항상세조회() throws Exception {
+        //given
+        final String url = "/api/v1/announcements/{announcementId}";
 
+        Announcement announcement = Announcement.builder()
+                .title("title")
+                .content("content")
+                .imageUrl("imageUrl")
+                .isPinned(true)
+                .build();
+        Announcement savedAnnouncement = announcementRepository.save(announcement);
+
+        //expected
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get(url, savedAnnouncement.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.title").value("title"));
+
+    }
 }

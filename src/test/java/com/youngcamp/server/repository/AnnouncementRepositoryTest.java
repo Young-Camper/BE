@@ -165,4 +165,23 @@ public class AnnouncementRepositoryTest {
         assertThat(results.size()).isEqualTo(10);
         assertThat(results.get(0).getTitle()).isEqualTo("title0");
     }
+
+    @Test
+    public void 게시글상세조회() {
+        //given
+        Announcement announcement = Announcement.builder()
+                .title("title")
+                .content("content")
+                .imageUrl("image.jpg")
+                .isPinned(true)
+                .build();
+        Announcement savedAnnouncement = announcementRepository.save(announcement);
+
+        //when
+        Optional<Announcement> result = announcementRepository.findById(savedAnnouncement.getId());
+
+        //then
+        assertThat(result.isPresent()).isTrue();
+        assertThat(result.get().getTitle()).isEqualTo("title");
+    }
 }

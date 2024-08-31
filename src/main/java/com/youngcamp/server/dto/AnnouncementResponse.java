@@ -30,4 +30,14 @@ public class AnnouncementResponse {
             this.isPinned = announcement.getIsPinned();
         }
     }
+
+    @Builder
+    @Getter
+    public static class AnnouncementGetDetailResponse {
+        private String title;
+        private String content;
+        private String imageUrl;
+        private Boolean isPinned;
+    }
+
 }
