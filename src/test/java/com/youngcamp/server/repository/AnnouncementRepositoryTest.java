@@ -1,12 +1,14 @@
 package com.youngcamp.server.repository;
 
 import com.youngcamp.server.domain.Announcement;
+import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementSearch;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -68,7 +70,7 @@ public class AnnouncementRepositoryTest {
 
         //when
         Announcement savedAnnouncement = announcementRepository.save(announcement);
-        announcementRepository.deleteAllByUserId(List.of(savedAnnouncement.getId()));
+        announcementRepository.deleteAllAnnouncementById(List.of(savedAnnouncement.getId()));
         Optional<Announcement> result = announcementRepository.findById(announcement.getId());
 
         //then
@@ -94,10 +96,73 @@ public class AnnouncementRepositoryTest {
                 .collect(Collectors.toList());
 
         //when
-        announcementRepository.deleteAllByUserId(requestIds);
+        announcementRepository.deleteAllAnnouncementById(requestIds);
         List<Announcement> result = announcementRepository.findAllById(requestIds);
 
         //then
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void 존재하는공지사항만반환성공() {
+        //given
+        final Announcement announcement1 = Announcement.builder()
+                .id(-1L)
+                .title("공지사항 1")
+                .content("내용 1")
+                .isPinned(false)
+                .imageUrl("image1.jpg")
+                .build();
+
+        final Announcement announcement2 = Announcement.builder()
+                .id(-2L)
+                .title("공지사항 2")
+                .content("내용 2")
+                .isPinned(false)
+                .imageUrl("image2.jpg")
+                .build();
+
+        List<Announcement> savedAnnouncements = announcementRepository.saveAll(Arrays.asList(announcement1, announcement2));
+
+        //when
+        List<Long> idsToCheck = Arrays.asList(
+                savedAnnouncements.get(0).getId(),
+                savedAnnouncements.get(1).getId()
+        );
+
+        List<Long> existingIds = announcementRepository.findExistingIds(idsToCheck);
+
+        //then
+        assertThat(existingIds).containsExactlyInAnyOrder(savedAnnouncements.get(0).getId(), savedAnnouncements.get(1).getId());
+        assertThat(existingIds).doesNotContain(-3L);
+        assertThat(2).isEqualTo(existingIds.size());
+    }
+
+    @Test
+    public void 공지사항조회성공() {
+        //given
+        List<Announcement> announcements = IntStream.range(0, 20)
+                .mapToObj(i -> Announcement.builder()
+                        .title("title" + i)
+                        .content("content" + i)
+                        .imageUrl("imageUrl" + i)
+                        .isPinned(true)
+                        .build())
+                .collect(Collectors.toList());
+
+        announcementRepository.saveAll(announcements);
+
+        AnnouncementSearch search = AnnouncementSearch.builder()
+                .page(1)
+                .build();
+
+        PageRequest pageRequest = PageRequest.of(search.getPage() - 1, search.getSize());
+
+        //when
+        List<Announcement> results = announcementRepository.findAll(pageRequest).getContent();
+
+        //then
+        assertThat(results.size()).isEqualTo(10);
+        assertThat(results.get(0).getTitle()).isEqualTo("title0");
     }
 }
