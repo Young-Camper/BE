@@ -1,17 +1,11 @@
 package com.youngcamp.server.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
+import lombok.*;
 
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Getter
 public class Announcement {
@@ -20,13 +14,18 @@ public class Announcement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
     private Boolean isPinned;
 
     private String imageUrl;
+
+    private String fileUrl;
 
     public void editAnnouncement(String title, String content, String imageUrl, Boolean isPinned) {
         this.title = title;
