@@ -65,10 +65,8 @@ public class AnnouncementService {
         }
     }
 
-    public List<AnnouncementGetResponse> getAnnouncements(AnnouncementSearch announcementSearch) {
-        PageRequest pageable = PageRequest.of(announcementSearch.getPage() - 1, announcementSearch.getSize());
-
-        return announcementRepository.findAll(pageable).getContent().stream()
+    public List<AnnouncementGetResponse> getAnnouncements() {
+        return announcementRepository.findAll().stream()
                 .map(AnnouncementGetResponse::new)
                 .collect(Collectors.toList());
     }

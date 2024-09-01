@@ -36,8 +36,8 @@ public class AnnouncementController {
     }
 
     @GetMapping("/api/v1/announcements")
-    public SuccessResponse<List<AnnouncementGetResponse>> getAnnouncements(@ModelAttribute AnnouncementSearch request) {
-        List<AnnouncementGetResponse> result = announcementService.getAnnouncements(request);
+    public SuccessResponse<List<AnnouncementGetResponse>> getAnnouncements() {
+        List<AnnouncementGetResponse> result = announcementService.getAnnouncements();
         return new SuccessResponse<>("Request processed successfully", result);
     }
 
@@ -55,4 +55,6 @@ public class AnnouncementController {
         AnnouncementEditResponse result = announcementService.editAnnouncement(announcementId, request);
         return new SuccessResponse<>("Request processed successfully", result);
     }
+
+    //TODO 검색 기능
 }
