@@ -1,11 +1,8 @@
 package com.youngcamp.server.controller;
 
-import com.youngcamp.server.dto.AnnouncementRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementDeleteRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementEditRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementPostRequest;
-import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementSearch;
-import com.youngcamp.server.dto.AnnouncementResponse;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementEditResponse;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementGetDetailResponse;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementGetResponse;
@@ -56,5 +53,9 @@ public class AnnouncementController {
         return new SuccessResponse<>("Request processed successfully", result);
     }
 
-    //TODO 검색 기능
+    @GetMapping("/api/v1/announcements/search")
+    public SuccessResponse<List<AnnouncementGetResponse>> searchAnnouncements(@RequestParam(name = "keyword") String keyword) {
+        List<AnnouncementGetResponse> result = announcementService.searchAnnouncements(keyword);
+        return new SuccessResponse<>("Request processed successfully", result);
+    }
 }

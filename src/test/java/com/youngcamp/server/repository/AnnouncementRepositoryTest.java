@@ -1,12 +1,10 @@
 package com.youngcamp.server.repository;
 
 import com.youngcamp.server.domain.Announcement;
-import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementSearch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.Arrays;
 import java.util.List;
@@ -152,17 +150,11 @@ public class AnnouncementRepositoryTest {
 
         announcementRepository.saveAll(announcements);
 
-        AnnouncementSearch search = AnnouncementSearch.builder()
-                .page(1)
-                .build();
-
-        PageRequest pageRequest = PageRequest.of(search.getPage() - 1, search.getSize());
-
         //when
-        List<Announcement> results = announcementRepository.findAll(pageRequest).getContent();
+        List<Announcement> results = announcementRepository.findAll();
 
         //then
-        assertThat(results.size()).isEqualTo(10);
+        assertThat(results.size()).isEqualTo(20);
         assertThat(results.get(0).getTitle()).isEqualTo("title0");
     }
 
@@ -183,5 +175,35 @@ public class AnnouncementRepositoryTest {
         //then
         assertThat(result.isPresent()).isTrue();
         assertThat(result.get().getTitle()).isEqualTo("title");
+    }
+
+    @Test
+    public void 공지사항검색() {
+        //given
+        Announcement announcement = Announcement.builder()
+                .title("타이틀")
+                .content("컨텐츠")
+                .imageUrl("이미지.jpg")
+                .isPinned(true)
+                .build();
+        announcementRepository.save(announcement);
+
+        List<Announcement> announcements = IntStream.range(0, 3)
+                .mapToObj(i -> Announcement.builder()
+                        .title("title" + i)
+                        .content("content" + i)
+                        .imageUrl("imageUrl" + i)
+                        .isPinned(true)
+                        .build())
+                .collect(Collectors.toList());
+        announcementRepository.saveAll(announcements);
+
+        String keyword = "tle";
+
+        //when
+        List<Announcement> foundAnnouncements = announcementRepository.findByTitleLike(keyword);
+
+        //then
+        assertThat(foundAnnouncements.size()).isEqualTo(3);
     }
 }

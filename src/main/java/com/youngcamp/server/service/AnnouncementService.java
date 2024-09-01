@@ -1,11 +1,9 @@
 package com.youngcamp.server.service;
 
 import com.youngcamp.server.domain.Announcement;
-import com.youngcamp.server.dto.AnnouncementRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementDeleteRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementEditRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementPostRequest;
-import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementSearch;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementEditResponse;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementGetDetailResponse;
 import com.youngcamp.server.dto.AnnouncementResponse.AnnouncementGetResponse;
@@ -14,7 +12,6 @@ import com.youngcamp.server.exception.NotFoundException;
 import com.youngcamp.server.repository.AnnouncementRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,5 +89,13 @@ public class AnnouncementService {
         return AnnouncementEditResponse.builder()
                 .id(announcement.getId())
                 .build();
+    }
+
+    public List<AnnouncementGetResponse> searchAnnouncements(String keyword) {
+        List<Announcement> foundAnnouncements = announcementRepository.findByTitleLike(keyword);
+
+        return foundAnnouncements.stream()
+                .map(AnnouncementGetResponse::new)
+                .collect(Collectors.toList());
     }
 }

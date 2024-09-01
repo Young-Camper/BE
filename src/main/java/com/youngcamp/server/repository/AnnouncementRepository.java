@@ -19,4 +19,7 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Long
 
     @Query(value = "select a.id from Announcement a where a.id in :announcementIds")
     List<Long> findExistingIds(@Param("announcementIds") List<Long> ids);
+
+    @Query(value = "select a from Announcement a where a.title like %:keyword%")
+    List<Announcement> findByTitleLike(String keyword);
 }
