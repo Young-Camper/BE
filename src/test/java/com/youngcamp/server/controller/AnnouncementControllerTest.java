@@ -143,7 +143,7 @@ public class AnnouncementControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.length()").value(10));
+                .andExpect(jsonPath("$.data.length()").value(15));
     }
 
     @Test
@@ -206,5 +206,39 @@ public class AnnouncementControllerTest {
         Assertions.assertThat(result.getContent()).isEqualTo("new content");
         Assertions.assertThat(result.getImageUrl()).isEqualTo("new image");
         Assertions.assertThat(result.getIsPinned()).isEqualTo(true);
+    }
+
+    @Test
+    public void 공지사항검색() throws Exception {
+        //given
+        Announcement announcement = Announcement.builder()
+                .title("타이틀")
+                .content("컨텐츠")
+                .imageUrl("이미지.jpg")
+                .isPinned(true)
+                .build();
+        announcementRepository.save(announcement);
+
+        List<Announcement> announcements = IntStream.range(0, 3)
+                .mapToObj(i -> Announcement.builder()
+                        .title("title" + i)
+                        .content("content" + i)
+                        .imageUrl("imageUrl" + i)
+                        .isPinned(true)
+                        .build())
+                .collect(Collectors.toList());
+        announcementRepository.saveAll(announcements);
+
+        final String url = "/api/v1/announcements/search?keyword=tle";
+        String keyword = "tle";
+
+        //expected
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.length()").value(3));
     }
 }
