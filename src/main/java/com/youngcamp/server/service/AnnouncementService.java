@@ -67,7 +67,7 @@ public class AnnouncementService {
     }
 
     public List<AnnouncementGetResponse> getAnnouncements() {
-        return announcementRepository.findAll().stream()
+        return announcementRepository.findAllOrderByCreatedAtDesc().stream()
                 .map(AnnouncementGetResponse::new)
                 .collect(Collectors.toList());
     }
@@ -99,7 +99,7 @@ public class AnnouncementService {
     }
 
     public List<AnnouncementGetResponse> searchAnnouncements(String keyword) {
-        List<Announcement> foundAnnouncements = announcementRepository.findByTitleLike(keyword);
+        List<Announcement> foundAnnouncements = announcementRepository.findByTitleLikeOrderByCreatedAtDesc(keyword);
 
         return foundAnnouncements.stream()
                 .map(AnnouncementGetResponse::new)

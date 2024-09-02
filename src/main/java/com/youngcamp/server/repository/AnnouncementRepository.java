@@ -20,6 +20,9 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Long
     @Query(value = "select a.id from Announcement a where a.id in :announcementIds")
     List<Long> findExistingIds(@Param("announcementIds") List<Long> ids);
 
-    @Query(value = "select a from Announcement a where a.title like %:keyword%")
-    List<Announcement> findByTitleLike(String keyword);
+    @Query(value = "select a from Announcement a where a.title like %:keyword% order by a.createdAt desc")
+    List<Announcement> findByTitleLikeOrderByCreatedAtDesc(String keyword);
+
+    @Query(value = "select a from Announcement a order by a.createdAt desc")
+    List<Announcement> findAllOrderByCreatedAtDesc();
 }
