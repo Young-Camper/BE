@@ -138,8 +138,6 @@ public class AnnouncementControllerTest {
         mockMvc.perform(
                         MockMvcRequestBuilders.get(url)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .param("page", "1")
-                                .param("size", "10")
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
