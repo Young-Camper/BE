@@ -1,7 +1,13 @@
 package com.youngcamp.server.domain;
 
+import com.youngcamp.server.dto.AnnouncementRequest;
+import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementEditRequest;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -27,11 +33,17 @@ public class Announcement {
 
     private String fileUrl;
 
-    public void editAnnouncement(String title, String content, String imageUrl, String fileUrl, Boolean isPinned) {
-        this.title = title;
-        this.content = content;
-        this.imageUrl = imageUrl;
-        this.fileUrl = fileUrl;
-        this.isPinned = isPinned;
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    public void editAnnouncement(AnnouncementEditRequest request) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
+        this.imageUrl = request.getImageUrl();
+        this.fileUrl = request.getFileUrl();
+        this.isPinned = request.getIsPinned();
+        this.updatedAt = request.getUpdatedAt();
     }
 }
