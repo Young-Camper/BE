@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -145,17 +146,21 @@ public class AnnouncementRepositoryTest {
                         .content("content" + i)
                         .imageUrl("imageUrl" + i)
                         .isPinned(true)
+                        .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
                         .build())
                 .collect(Collectors.toList());
 
         announcementRepository.saveAll(announcements);
 
         //when
-        List<Announcement> results = announcementRepository.findAll();
+        List<Announcement> results = announcementRepository.findAllOrderByCreatedAtDesc();
 
         //then
         assertThat(results.size()).isEqualTo(20);
         assertThat(results.get(0).getTitle()).isEqualTo("title0");
+        assertThat(results)
+                .isSortedAccordingTo((a1, a2) -> a2.getCreatedAt().compareTo(a1.getCreatedAt()));
     }
 
     @Test
@@ -185,8 +190,10 @@ public class AnnouncementRepositoryTest {
                 .content("컨텐츠")
                 .imageUrl("이미지.jpg")
                 .isPinned(true)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
-        announcementRepository.save(announcement);
+        Announcement savedAnnouncement = announcementRepository.save(announcement);
 
         List<Announcement> announcements = IntStream.range(0, 3)
                 .mapToObj(i -> Announcement.builder()
@@ -194,6 +201,8 @@ public class AnnouncementRepositoryTest {
                         .content("content" + i)
                         .imageUrl("imageUrl" + i)
                         .isPinned(true)
+                        .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
                         .build())
                 .collect(Collectors.toList());
         announcementRepository.saveAll(announcements);
@@ -201,9 +210,11 @@ public class AnnouncementRepositoryTest {
         String keyword = "tle";
 
         //when
-        List<Announcement> foundAnnouncements = announcementRepository.findByTitleLike(keyword);
+        List<Announcement> foundAnnouncements = announcementRepository.findByTitleLikeOrderByCreatedAtDesc(keyword);
 
         //then
         assertThat(foundAnnouncements.size()).isEqualTo(3);
+        assertThat(foundAnnouncements)
+                .isSortedAccordingTo((a1, a2) -> a2.getCreatedAt().compareTo(a1.getCreatedAt()));
     }
 }
