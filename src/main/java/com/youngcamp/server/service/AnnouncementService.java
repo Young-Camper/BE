@@ -33,6 +33,7 @@ public class AnnouncementService {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .imageUrl(request.getImageUrl())
+                .fileUrl(request.getFileUrl())
                 .isPinned(request.getIsPinned())
                 .build();
 
@@ -76,6 +77,7 @@ public class AnnouncementService {
                 .title(announcement.getTitle())
                 .content(announcement.getContent())
                 .imageUrl(announcement.getImageUrl())
+                .fileUrl(announcement.getFileUrl())
                 .isPinned(announcement.getIsPinned())
                 .build();
     }
@@ -84,7 +86,7 @@ public class AnnouncementService {
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(() -> new NotFoundException("Announcement", String.valueOf(announcementId), "Resource with the specified ID was not found"));
 
-        announcement.editAnnouncement(request.getTitle(), request.getContent(), request.getImageUrl(), request.getIsPinned());
+        announcement.editAnnouncement(request.getTitle(), request.getContent(), request.getImageUrl(), request.getFileUrl(),request.getIsPinned());
 
         return AnnouncementEditResponse.builder()
                 .id(announcement.getId())
