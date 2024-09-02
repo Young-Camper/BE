@@ -44,6 +44,6 @@ public class Announcement {
         this.imageUrl = request.getImageUrl();
         this.fileUrl = request.getFileUrl();
         this.isPinned = request.getIsPinned();
-        this.updatedAt = request.getUpdatedAt();
+        this.updatedAt = LocalDateTime.now();
     }
 }

@@ -1,12 +1,12 @@
 package com.youngcamp.server.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
-
-import static java.lang.Math.max;
-import static java.lang.Math.min;
 
 public class AnnouncementRequest {
 

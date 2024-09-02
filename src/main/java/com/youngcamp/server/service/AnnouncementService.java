@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,8 @@ public class AnnouncementService {
                 .imageUrl(request.getImageUrl())
                 .fileUrl(request.getFileUrl())
                 .isPinned(request.getIsPinned())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
 
         Announcement savedAnnouncement = announcementRepository.save(announcement);
@@ -79,6 +82,8 @@ public class AnnouncementService {
                 .imageUrl(announcement.getImageUrl())
                 .fileUrl(announcement.getFileUrl())
                 .isPinned(announcement.getIsPinned())
+                .createdAt(announcement.getCreatedAt())
+                .updatedAt(announcement.getUpdatedAt())
                 .build();
     }
 
@@ -86,7 +91,7 @@ public class AnnouncementService {
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(() -> new NotFoundException("Announcement", String.valueOf(announcementId), "Resource with the specified ID was not found"));
 
-        announcement.editAnnouncement(request.getTitle(), request.getContent(), request.getImageUrl(), request.getFileUrl(),request.getIsPinned());
+        announcement.editAnnouncement(request);
 
         return AnnouncementEditResponse.builder()
                 .id(announcement.getId())
