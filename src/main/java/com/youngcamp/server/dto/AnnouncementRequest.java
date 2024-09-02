@@ -16,6 +16,7 @@ public class AnnouncementRequest {
         private String title;
         private String content;
         private String imageUrl;
+        private String fileUrl;
         private Boolean isPinned;
     }
 
@@ -34,6 +35,7 @@ public class AnnouncementRequest {
         private String title;
         private String content;
         private String imageUrl;
+        private String fileUrl;
         private Boolean isPinned;
     }
 }

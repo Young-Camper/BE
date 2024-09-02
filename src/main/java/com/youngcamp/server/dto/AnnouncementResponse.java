@@ -43,6 +43,7 @@ public class AnnouncementResponse {
         private String title;
         private String content;
         private String imageUrl;
+        private String fileUrl;
         private Boolean isPinned;
     }
 

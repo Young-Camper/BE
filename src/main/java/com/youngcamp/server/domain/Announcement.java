@@ -27,10 +27,11 @@ public class Announcement {
 
     private String fileUrl;
 
-    public void editAnnouncement(String title, String content, String imageUrl, Boolean isPinned) {
+    public void editAnnouncement(String title, String content, String imageUrl, String fileUrl, Boolean isPinned) {
         this.title = title;
         this.content = content;
         this.imageUrl = imageUrl;
+        this.fileUrl = fileUrl;
         this.isPinned = isPinned;
     }
 }
