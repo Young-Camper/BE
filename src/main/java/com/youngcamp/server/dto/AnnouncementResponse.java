@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Getter
 public class AnnouncementResponse {
 
@@ -28,6 +31,8 @@ public class AnnouncementResponse {
         private Long id;
         private String title;
         private Boolean isPinned;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
 
         @Builder
         public AnnouncementGetResponse(Announcement announcement) {
@@ -45,6 +50,8 @@ public class AnnouncementResponse {
         private String imageUrl;
         private String fileUrl;
         private Boolean isPinned;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
     }
 
 }
