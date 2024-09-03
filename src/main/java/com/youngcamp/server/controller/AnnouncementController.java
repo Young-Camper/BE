@@ -46,7 +46,7 @@ public class AnnouncementController {
     public SuccessResponse<?> deleteAnnouncements(@RequestBody AnnouncementDeleteRequest request) {
         checkAdminAccess();
         announcementService.deleteAnnouncement(request);
-        return new SuccessResponse<>("Request processed successfully", null); //TODO
+        return new SuccessResponse<>("공지사항 삭제 성공", null);
     }
 
     @Operation(
@@ -56,7 +56,7 @@ public class AnnouncementController {
     @GetMapping("/api/v1/announcements")
     public SuccessResponse<List<AnnouncementGetResponse>> getAnnouncements() {
         List<AnnouncementGetResponse> result = announcementService.getAnnouncements();
-        return new SuccessResponse<>("Request processed successfully", result);
+        return new SuccessResponse<>("공지사항 목록 조회 성공", result);
     }
 
     @Operation(
@@ -66,7 +66,7 @@ public class AnnouncementController {
     @GetMapping("/api/v1/announcements/{announcementId}")
     public SuccessResponse<AnnouncementGetDetailResponse> getDetailAnnouncement(@PathVariable(name = "announcementId") Long announcementId) {
         AnnouncementGetDetailResponse result = announcementService.getDetailAnnouncement(announcementId);
-        return new SuccessResponse<>("Request processed successfully", result);
+        return new SuccessResponse<>("공지사항 상세 조회 성공", result);
     }
 
     @Operation(
@@ -81,7 +81,7 @@ public class AnnouncementController {
     ) {
         checkAdminAccess();
         AnnouncementEditResponse result = announcementService.editAnnouncement(announcementId, request);
-        return new SuccessResponse<>("Request processed successfully", result);
+        return new SuccessResponse<>("공지사항 수정 성공", result);
     }
 
     @Operation(
@@ -91,7 +91,7 @@ public class AnnouncementController {
     @GetMapping("/api/v1/announcements/search")
     public SuccessResponse<List<AnnouncementGetResponse>> searchAnnouncements(@RequestParam(name = "keyword") String keyword) {
         List<AnnouncementGetResponse> result = announcementService.searchAnnouncements(keyword);
-        return new SuccessResponse<>("Request processed successfully", result);
+        return new SuccessResponse<>("공지사항 검색 성공", result);
     }
 
     private void checkAdminAccess() {
