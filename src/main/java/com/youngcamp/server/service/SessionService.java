@@ -16,6 +16,10 @@ public class SessionService {
 
   private final AuthenticationManager authenticationManager;
 
+<<<<<<< HEAD
+=======
+  // Security AutoManager 주입
+>>>>>>> ce80d038600615ef5038163b24e16964e9c1f0a2
   public SessionService(AuthenticationConfiguration authenticationConfiguration) throws Exception {
     this.authenticationManager = authenticationConfiguration.getAuthenticationManager();
   }
