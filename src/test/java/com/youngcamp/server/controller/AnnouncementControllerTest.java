@@ -8,16 +8,17 @@ import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementPostRequest;
 import com.youngcamp.server.repository.AnnouncementRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -25,12 +26,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @Transactional
 public class AnnouncementControllerTest {
 
@@ -40,17 +42,11 @@ public class AnnouncementControllerTest {
     @Autowired
     private AnnouncementRepository announcementRepository;
 
-
+    @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
     private ObjectMapper mapper;
-
-    @BeforeEach
-    public void init() {
-        mockMvc = MockMvcBuilders.standaloneSetup(target)
-                .build();
-
-        mapper = new ObjectMapper();
-    }
 
     @AfterEach
     void clean() {
@@ -64,9 +60,14 @@ public class AnnouncementControllerTest {
     }
 
     @Test
+    @WithMockUser(authorities = {"ADMIN"})
     public void 공지사항등록() throws Exception {
         //given
-        final String url = "/api/v1/announcements";
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.getAuthentication();
+
+
+        final String url = "/api/admin/v1/announcements";
         AnnouncementPostRequest request = AnnouncementPostRequest.builder()
                 .title("title")
                 .content("content")
@@ -78,6 +79,7 @@ public class AnnouncementControllerTest {
         //expected
         mockMvc.perform(
                 MockMvcRequestBuilders.post(url)
+                        .with(csrf())
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON)
         )
@@ -85,9 +87,10 @@ public class AnnouncementControllerTest {
     }
 
     @Test
+    @WithMockUser(authorities = {"ADMIN"})
     public void 공지사항삭제() throws Exception {
         //given
-        final String url = "/api/v1/announcements";
+        final String url = "/api/admin/v1/announcements";
 
         List<Announcement> announcements = IntStream.range(0, 10)
                 .mapToObj(i -> Announcement.builder()
@@ -168,9 +171,10 @@ public class AnnouncementControllerTest {
     }
 
     @Test
+    @WithMockUser(authorities = {"ADMIN"})
     public void 공지사항수정() throws Exception {
         //given
-        final String url = "/api/v1/announcements/{announcementId}";
+        final String url = "/api/admin/v1/announcements/{announcementId}";
 
         Announcement oldAnnouncement = Announcement.builder()
                 .title("old title")
