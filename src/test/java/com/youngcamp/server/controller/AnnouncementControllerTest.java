@@ -67,7 +67,7 @@ public class AnnouncementControllerTest {
         context.getAuthentication();
 
 
-        final String url = "/api/admin/v1/announcements";
+        final String url = "/api/announcements";
         AnnouncementPostRequest request = AnnouncementPostRequest.builder()
                 .title("title")
                 .content("content")
@@ -89,7 +89,7 @@ public class AnnouncementControllerTest {
     @WithMockUser(roles = {"ADMIN"})
     public void 공지사항삭제() throws Exception {
         //given
-        final String url = "/api/admin/v1/announcements";
+        final String url = "/api/announcements";
 
         List<Announcement> announcements = IntStream.range(0, 10)
                 .mapToObj(i -> Announcement.builder()
@@ -124,7 +124,7 @@ public class AnnouncementControllerTest {
     @Test
     public void 공지사항조회() throws Exception {
         //given
-        final String url = "/api/v1/announcements";
+        final String url = "/api/announcements";
 
         List<Announcement> announcements = IntStream.range(0, 15)
                 .mapToObj(i -> Announcement.builder()
@@ -149,7 +149,7 @@ public class AnnouncementControllerTest {
     @Test
     public void 공지사항상세조회() throws Exception {
         //given
-        final String url = "/api/v1/announcements/{announcementId}";
+        final String url = "/api/announcements/{announcementId}";
 
         Announcement announcement = Announcement.builder()
                 .title("title")
@@ -173,7 +173,7 @@ public class AnnouncementControllerTest {
     @WithMockUser(roles = {"ADMIN"})
     public void 공지사항수정() throws Exception {
         //given
-        final String url = "/api/admin/v1/announcements/{announcementId}";
+        final String url = "/api/announcements/{announcementId}";
 
         Announcement oldAnnouncement = Announcement.builder()
                 .title("old title")
@@ -230,7 +230,7 @@ public class AnnouncementControllerTest {
                 .collect(Collectors.toList());
         announcementRepository.saveAll(announcements);
 
-        final String url = "/api/v1/announcements/search?keyword=tle";
+        final String url = "/api/announcements/search?keyword=tle";
         String keyword = "tle";
 
         //expected

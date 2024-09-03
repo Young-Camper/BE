@@ -1,5 +1,6 @@
 package com.youngcamp.server.controller;
 
+import com.youngcamp.server.annotation.AdminOnly;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementDeleteRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementEditRequest;
 import com.youngcamp.server.dto.AnnouncementRequest.AnnouncementPostRequest;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/announcements")
 @Tag(name = "Announcement", description = "공지사항 관련 API")
 public class AnnouncementController {
 
@@ -31,10 +33,9 @@ public class AnnouncementController {
             summary = "공지사항 등록 API",
             description = "공지사항을 등록합니다."
     )
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/api/admin/v1/announcements")
+    @AdminOnly
+    @PostMapping
     public SuccessResponse<AnnouncementPostResponse> postAnnouncement(@RequestBody AnnouncementPostRequest request) {
-        checkAdminAccess();
         AnnouncementPostResponse result = announcementService.addAnnouncement(request);
         return new SuccessResponse<>("Request processed successfully", result);
     }
@@ -43,10 +44,9 @@ public class AnnouncementController {
             summary = "공지사항 삭제 API",
             description = "공지사항 ID값을 List로 넘겨 받아 Batch삭제 합니다."
     )
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/api/admin/v1/announcements")
+    @AdminOnly
+    @DeleteMapping
     public SuccessResponse<?> deleteAnnouncements(@RequestBody AnnouncementDeleteRequest request) {
-        checkAdminAccess();
         announcementService.deleteAnnouncement(request);
         return new SuccessResponse<>("공지사항 삭제 성공", null);
     }
@@ -55,7 +55,7 @@ public class AnnouncementController {
             summary = "공지사항 목록 조회 API",
             description = "존재하는 공지사항 목록을 조회합니다."
     )
-    @GetMapping("/api/v1/announcements")
+    @GetMapping
     public SuccessResponse<List<AnnouncementGetResponse>> getAnnouncements() {
         List<AnnouncementGetResponse> result = announcementService.getAnnouncements();
         return new SuccessResponse<>("공지사항 목록 조회 성공", result);
@@ -65,7 +65,7 @@ public class AnnouncementController {
             summary = "공지사항 상세 조회 API",
             description = "공지사항 ID값으로 특정 공지 사항 내용을 조회합니다."
     )
-    @GetMapping("/api/v1/announcements/{announcementId}")
+    @GetMapping("/{announcementId}")
     public SuccessResponse<AnnouncementGetDetailResponse> getDetailAnnouncement(@PathVariable(name = "announcementId") Long announcementId) {
         AnnouncementGetDetailResponse result = announcementService.getDetailAnnouncement(announcementId);
         return new SuccessResponse<>("공지사항 상세 조회 성공", result);
@@ -75,13 +75,12 @@ public class AnnouncementController {
             summary = "공지사항 수정 API",
             description = "공지사항 ID값으로 특정 공지 사항 내용을 수정합니다."
     )
-    @PreAuthorize("hasRole('ADMIN')")
-    @PatchMapping("/api/admin/v1/announcements/{announcementId}")
+    @AdminOnly
+    @PatchMapping("/{announcementId}")
     public SuccessResponse<AnnouncementEditResponse> editAnnouncement(
             @PathVariable(name = "announcementId") Long announcementId,
             @RequestBody AnnouncementEditRequest request
     ) {
-        checkAdminAccess();
         AnnouncementEditResponse result = announcementService.editAnnouncement(announcementId, request);
         return new SuccessResponse<>("공지사항 수정 성공", result);
     }
@@ -90,15 +89,9 @@ public class AnnouncementController {
             summary = "공지사항 검색 API",
             description = "QueryParameter keyword를 통해 공지사항을 목록을 조회합니다.(like %:keyword%)"
     )
-    @GetMapping("/api/v1/announcements/search")
+    @GetMapping("/search")
     public SuccessResponse<List<AnnouncementGetResponse>> searchAnnouncements(@RequestParam(name = "keyword") String keyword) {
         List<AnnouncementGetResponse> result = announcementService.searchAnnouncements(keyword);
         return new SuccessResponse<>("공지사항 검색 성공", result);
-    }
-
-    private void checkAdminAccess() {
-        if (!adminChecker.isAdmin()) {
-            throw new AccessDeniedException("Access is denied. Admin role required");
-        }
     }
 }

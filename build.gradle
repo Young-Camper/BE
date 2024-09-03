@@ -1,26 +1,22 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.3.2'
-	id 'io.spring.dependency-management' version '1.1.6'
+    id 'java'
+    id 'org.springframework.boot' version '3.3.2'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'com.github.sherter.google-java-format' version '0.9'
 }
 
 group = 'com.youngcamp'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
-}
-
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -30,6 +26,9 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.apache.commons:commons-text:1.10.0'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'software.amazon.awssdk:s3:2.17.217'
     implementation 'com.bucket4j:bucket4j-core:8.3.0'
     implementation 'org.springframework.session:spring-session-core'
@@ -43,5 +42,13 @@ dependencies {
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
+}
+
+googleJavaFormat {
+    toolVersion = "1.7"
+}
+
+tasks.named("check") {
+    dependsOn "googleJavaFormat"
 }

@@ -12,6 +12,8 @@ public class AnnouncementRequest {
 
     @Getter
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class AnnouncementPostRequest {
         private String title;
         private String content;
@@ -30,6 +32,8 @@ public class AnnouncementRequest {
 
     @Getter
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class AnnouncementEditRequest {
         private String title;
