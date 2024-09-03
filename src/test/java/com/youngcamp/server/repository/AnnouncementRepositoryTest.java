@@ -146,8 +146,8 @@ public class AnnouncementRepositoryTest {
                         .content("content" + i)
                         .imageUrl("imageUrl" + i)
                         .isPinned(true)
-                        .createdAt(LocalDateTime.now())
-                        .updatedAt(LocalDateTime.now())
+                        .createdAt(LocalDateTime.now().plusSeconds(i))
+                        .updatedAt(LocalDateTime.now().plusSeconds(i))
                         .build())
                 .collect(Collectors.toList());
 
@@ -158,7 +158,7 @@ public class AnnouncementRepositoryTest {
 
         //then
         assertThat(results.size()).isEqualTo(20);
-        assertThat(results.get(0).getTitle()).isEqualTo("title0");
+        assertThat(results.get(0).getTitle()).isEqualTo("title19");
         assertThat(results)
                 .isSortedAccordingTo((a1, a2) -> a2.getCreatedAt().compareTo(a1.getCreatedAt()));
     }
