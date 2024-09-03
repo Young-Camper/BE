@@ -60,6 +60,13 @@ public class SecurityConfig {
             formLogin ->
                 formLogin.loginPage("/api/login").loginProcessingUrl("/api/login").permitAll())
         .httpBasic(withDefaults())
+        .logout(
+            logout ->
+                logout
+                    .logoutUrl("/api/admin/logout")
+                    .invalidateHttpSession(true)
+                    .clearAuthentication(true)
+                    .deleteCookies("JSESSIONID", "ADMINID"))
         .sessionManagement(
             sessionManagement -> {
               sessionManagement.maximumSessions(1).maxSessionsPreventsLogin(false);
