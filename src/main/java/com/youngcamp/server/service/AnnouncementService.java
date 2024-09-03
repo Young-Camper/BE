@@ -62,7 +62,7 @@ public class AnnouncementService {
                 .collect(Collectors.toList());
 
         if (!nonExistingIds.isEmpty()) {
-            throw new NotFoundException("Announcement", null, "존재하지 않는 ID가 포함되어 있습니다"); //TODO
+            throw new NotFoundException("Announcement", null, "존재하지 않는 ID가 포함되어 있습니다");
         }
     }
 
