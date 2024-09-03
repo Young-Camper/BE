@@ -79,10 +79,6 @@ public class AnnouncementControllerTest {
         //expected
         mockMvc.perform(
                 MockMvcRequestBuilders.post(url)
-<<<<<<< HEAD
-=======
-                        .with(csrf())
->>>>>>> ce80d038600615ef5038163b24e16964e9c1f0a2
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON)
         )
