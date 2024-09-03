@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 @Transactional
 public class AnnouncementControllerTest {
 
@@ -60,7 +60,7 @@ public class AnnouncementControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = {"ADMIN"})
+    @WithMockUser(roles = {"ADMIN"})
     public void 공지사항등록() throws Exception {
         //given
         SecurityContext context = SecurityContextHolder.getContext();
@@ -79,7 +79,6 @@ public class AnnouncementControllerTest {
         //expected
         mockMvc.perform(
                 MockMvcRequestBuilders.post(url)
-                        .with(csrf())
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON)
         )
@@ -87,7 +86,7 @@ public class AnnouncementControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = {"ADMIN"})
+    @WithMockUser(roles = {"ADMIN"})
     public void 공지사항삭제() throws Exception {
         //given
         final String url = "/api/admin/v1/announcements";
@@ -171,7 +170,7 @@ public class AnnouncementControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = {"ADMIN"})
+    @WithMockUser(roles = {"ADMIN"})
     public void 공지사항수정() throws Exception {
         //given
         final String url = "/api/admin/v1/announcements/{announcementId}";
