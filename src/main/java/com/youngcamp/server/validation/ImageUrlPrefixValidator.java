@@ -6,8 +6,7 @@ import java.util.List;
 
 public class ImageUrlPrefixValidator implements ConstraintValidator<ImageUrlPrefix, List<String>> {
 
-  private static final String REQUIRED_PREFIX =
-      "https://dpy17a4qtt448.cloudfront.net/";
+  private static final String REQUIRED_PREFIX = "https://dpy17a4qtt448.cloudfront.net/";
 
   @Override
   public void initialize(ImageUrlPrefix constraintAnnotation) {}
